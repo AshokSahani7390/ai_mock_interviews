@@ -6,11 +6,10 @@ import { Input } from './ui/input'
 interface FormFieldProps<T extends FieldValues>{
   control: Control<T>;
   name: Path<T>;
-  label: String;
-  placeholder?: String;
+  label: string;
+  placeholder?: string;
   type?: "text" | "email" | "password" | "file";
 }
-
 const FormField = ({ control, name, label, placeholder, type="text"}: FormFieldProps<T>) => (
     <Controller name={name} control={control} render={({field}) => (          
             <FormItem>
