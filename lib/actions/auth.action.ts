@@ -1,9 +1,8 @@
 'use server';
 
 import { auth, db } from "@/firebase/admin";
-import { Auth } from "firebase-admin/auth";
 import { cookies } from "next/headers";
-import { success } from "zod";
+
 
 const ONE_WEEK = 60 * 60 * 24 * 7;
 
