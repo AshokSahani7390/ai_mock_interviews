@@ -34,7 +34,7 @@ const InterviewCard = async ({
     }[normalizedType] || "bg-light-600";
 
   const formattedDate = dayjs(
-    feedback?.createdAt || createdAt || Date.now()
+    feedback?.createdAt || createdAt || "2024-03-15T00:00:00.000Z"
   ).format("MMM D, YYYY");
 
   return (
@@ -53,11 +53,11 @@ const InterviewCard = async ({
 
           {/* Cover Image */}
           <Image
-            src={getRandomInterviewCover()}
+            src={getRandomInterviewCover(interviewId || role)}
             alt="cover-image"
             width={90}
             height={90}
-            className="rounded-full object-fit size-[90px]"
+            className="rounded-full object-cover size-[90px]"
           />
 
           {/* Interview Role */}

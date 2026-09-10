@@ -8,40 +8,37 @@ export function cn(...inputs: ClassValue[]) {
 
 const techIconBaseURL = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons";
 
-const normalizeTechName = (tech: string) => {
+export const normalizeTechName = (tech: string) => {
+  if (!tech) return "";
   const key = tech.toLowerCase().replace(/\.js$/, "").replace(/\s+/g, "");
-  return mappings[key as keyof typeof mappings];
+  return mappings[key as keyof typeof mappings] || key;
 };
 
-const checkIconExists = async (url: string) => {
-  try {
-    const response = await fetch(url, { method: "HEAD" });
-    return response.ok; // Returns true if the icon exists
-  } catch {
-    return false;
-  }
-};
+export const getTechLogos = (techArray?: string[]) => {
+  if (!techArray || !Array.isArray(techArray)) return [];
 
-export const getTechLogos = async (techArray: string[]) => {
-  const logoURLs = techArray.map((tech) => {
+  return techArray.map((tech) => {
     const normalized = normalizeTechName(tech);
     return {
       tech,
-      url: `${techIconBaseURL}/${normalized}/${normalized}-original.svg`,
+      url: normalized
+        ? `${techIconBaseURL}/${normalized}/${normalized}-original.svg`
+        : "/tech.svg",
     };
   });
-
-  const results = await Promise.all(
-    logoURLs.map(async ({ tech, url }) => ({
-      tech,
-      url: (await checkIconExists(url)) ? url : "/tech.svg",
-    }))
-  );
-
-  return results;
 };
 
-export const getRandomInterviewCover = () => {
-  const randomIndex = Math.floor(Math.random() * interviewCovers.length);
-  return `/covers${interviewCovers[randomIndex]}`;
+/**
+ * Deterministically returns a cover image based on an ID/role seed
+ * to avoid server/client hydration mismatches caused by Math.random().
+ */
+export const getRandomInterviewCover = (seed?: string) => {
+  if (!seed) return `/covers${interviewCovers[0]}`;
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) {
+    hash = (hash << 5) - hash + seed.charCodeAt(i);
+    hash |= 0;
+  }
+  const index = Math.abs(hash) % interviewCovers.length;
+  return `/covers${interviewCovers[index]}`;
 };
